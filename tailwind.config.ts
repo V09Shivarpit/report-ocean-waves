@@ -63,6 +63,19 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      backgroundImage: {
+        'ocean-gradient': 'var(--gradient-ocean)',
+        'hero-gradient': 'var(--gradient-hero)',
+        'wave-gradient': 'var(--gradient-wave)',
+      },
+      boxShadow: {
+        'ocean': 'var(--shadow-ocean)',
+        'card-shadow': 'var(--shadow-card)',
+        'glow': 'var(--shadow-glow)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       keyframes: {
         "accordion-down": {
           from: {
