@@ -6,6 +6,8 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import LiveDashboard from '@/components/LiveDashboard';
 import SatelliteData from '@/components/SatelliteData';
+import CityClimateSelector from '@/components/CityClimateSelector';
+import DataRecordingProof from '@/components/DataRecordingProof';
 import FeaturesSection from '@/components/FeaturesSection';
 import Footer from '@/components/Footer';
 import ReportModal from '@/components/ReportModal';
@@ -58,6 +60,12 @@ const Index: React.FC = () => {
       
       {/* Satellite Data Section */}
       <SatelliteData />
+      
+      {/* City-Specific Climate Data */}
+      <CityClimateSelector />
+      
+      {/* Real-time Data Verification */}
+      <DataRecordingProof />
       
       {/* Platform Features */}
       <FeaturesSection />
