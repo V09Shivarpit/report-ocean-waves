@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { CityClimateData, updateCityClimateData } from '@/lib/climateData';
+import { CityClimateData, indianCoastalCities } from '@/lib/climateData';
 
 interface RealTimeDataPoint {
   timestamp: Date;
@@ -33,7 +33,36 @@ export const useRealTimeData = (cityId: string) => {
     
     // Update every 5 seconds for demo purposes
     intervalRef.current = setInterval(() => {
-      const updatedData = updateCityClimateData(cityId);
+      const city = indianCoastalCities.find(c => c.id === cityId);
+      if (!city) return;
+
+      // Simulate small variations in real-time data
+      const variation = () => (Math.random() - 0.5) * 0.2;
+      
+      const updatedData = {
+        ...city,
+        oceanicClimate: {
+          ...city.oceanicClimate,
+          seaSurfaceTemp: {
+            ...city.oceanicClimate.seaSurfaceTemp,
+            current: parseFloat((city.oceanicClimate.seaSurfaceTemp.current + variation()).toFixed(1))
+          },
+          humidity: {
+            ...city.oceanicClimate.humidity,
+            current: Math.max(0, Math.min(100, Math.round(city.oceanicClimate.humidity.current + variation() * 5)))
+          },
+          windSpeed: {
+            ...city.oceanicClimate.windSpeed,
+            current: parseFloat((Math.max(0, city.oceanicClimate.windSpeed.current + variation() * 3)).toFixed(1))
+          },
+          waveHeight: {
+            ...city.oceanicClimate.waveHeight,
+            current: parseFloat((Math.max(0, city.oceanicClimate.waveHeight.current + variation())).toFixed(1))
+          }
+        },
+        lastUpdated: new Date()
+      };
+
       if (updatedData) {
         setCurrentData(updatedData);
         

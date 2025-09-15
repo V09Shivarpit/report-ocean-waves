@@ -51,8 +51,35 @@ export interface CityClimateData {
   lastUpdated: Date;
 }
 
-// Mock oceanic climate data for Indian coastal cities and districts
-export const indianCoastalCities: CityClimateData[] = [
+export interface SeaRegionHotspot {
+  id: string;
+  name: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  riskScore: number; // 0-100
+  totalReports: number;
+  cities: CityClimateData[];
+  averageConditions: {
+    temperature: number;
+    waveHeight: number;
+    windSpeed: number;
+    airQuality: number;
+  };
+}
+
+export interface SeaCategory {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  hotspots: SeaRegionHotspot[];
+}
+
+// Organized oceanic climate data by major sea regions
+const citiesData: CityClimateData[] = [
   // WEST COAST - GUJARAT
   {
     id: 'dwarka',
@@ -570,35 +597,241 @@ export const indianCoastalCities: CityClimateData[] = [
   }
 ];
 
-// Simulate real-time updates
-export const updateCityClimateData = (cityId: string): CityClimateData | null => {
-  const city = indianCoastalCities.find(c => c.id === cityId);
-  if (!city) return null;
+// Organized sea regions with priority hotspots
+export const seaRegions: SeaCategory[] = [
+  {
+    id: 'arabian-sea',
+    name: 'Arabian Sea',
+    description: 'Western coast of India from Gujarat to Kerala',
+    color: '#3B82F6',
+    hotspots: [
+      {
+        id: 'gujarat-coast',
+        name: 'Gujarat Coastal Region',
+        coordinates: { latitude: 22.5, longitude: 69.5 },
+        priority: 'high',
+        riskScore: 78,
+        totalReports: 145,
+        cities: citiesData.filter(city => ['dwarka', 'porbandar', 'kandla'].includes(city.id)),
+        averageConditions: {
+          temperature: 26.8,
+          waveHeight: 2.2,
+          windSpeed: 18.5,
+          airQuality: 100
+        }
+      },
+      {
+        id: 'maharashtra-coast',
+        name: 'Maharashtra Coastal Region',
+        coordinates: { latitude: 18.0, longitude: 73.0 },
+        priority: 'critical',
+        riskScore: 89,
+        totalReports: 234,
+        cities: citiesData.filter(city => ['mumbai', 'ratnagiri', 'alibag'].includes(city.id)),
+        averageConditions: {
+          temperature: 28.6,
+          waveHeight: 1.7,
+          windSpeed: 14.1,
+          airQuality: 103
+        }
+      },
+      {
+        id: 'karnataka-coast',
+        name: 'Karnataka Coastal Region',
+        coordinates: { latitude: 13.1, longitude: 74.8 },
+        priority: 'medium',
+        riskScore: 65,
+        totalReports: 87,
+        cities: citiesData.filter(city => ['mangalore', 'udupi'].includes(city.id)),
+        averageConditions: {
+          temperature: 28.9,
+          waveHeight: 1.4,
+          windSpeed: 10.1,
+          airQuality: 65
+        }
+      },
+      {
+        id: 'kerala-coast',
+        name: 'Kerala Coastal Region',
+        coordinates: { latitude: 9.2, longitude: 76.5 },
+        priority: 'low',
+        riskScore: 45,
+        totalReports: 56,
+        cities: citiesData.filter(city => ['kochi', 'thiruvananthapuram', 'alappuzha'].includes(city.id)),
+        averageConditions: {
+          temperature: 28.0,
+          waveHeight: 0.9,
+          windSpeed: 8.2,
+          airQuality: 61
+        }
+      },
+      {
+        id: 'goa-coast',
+        name: 'Goa Coastal Region',
+        coordinates: { latitude: 15.3, longitude: 74.1 },
+        priority: 'low',
+        riskScore: 42,
+        totalReports: 38,
+        cities: citiesData.filter(city => city.id === 'goa'),
+        averageConditions: {
+          temperature: 28.1,
+          waveHeight: 1.3,
+          windSpeed: 9.7,
+          airQuality: 72
+        }
+      }
+    ]
+  },
+  {
+    id: 'bay-of-bengal',
+    name: 'Bay of Bengal',
+    description: 'Eastern coast from Tamil Nadu to West Bengal',
+    color: '#10B981',
+    hotspots: [
+      {
+        id: 'tamil-nadu-coast',
+        name: 'Tamil Nadu Coastal Region',
+        coordinates: { latitude: 11.5, longitude: 79.8 },
+        priority: 'high',
+        riskScore: 73,
+        totalReports: 189,
+        cities: citiesData.filter(city => ['chennai', 'tuticorin', 'rameswaram', 'nagapattinam', 'cuddalore', 'pondicherry'].includes(city.id)),
+        averageConditions: {
+          temperature: 29.1,
+          waveHeight: 1.3,
+          windSpeed: 12.9,
+          airQuality: 84
+        }
+      },
+      {
+        id: 'andhra-pradesh-coast',
+        name: 'Andhra Pradesh Coastal Region',
+        coordinates: { latitude: 16.5, longitude: 82.0 },
+        priority: 'critical',
+        riskScore: 85,
+        totalReports: 198,
+        cities: citiesData.filter(city => ['visakhapatnam', 'kakinada', 'machilipatnam', 'nellore'].includes(city.id)),
+        averageConditions: {
+          temperature: 28.8,
+          waveHeight: 1.8,
+          windSpeed: 16.4,
+          airQuality: 108
+        }
+      },
+      {
+        id: 'odisha-coast',
+        name: 'Odisha Coastal Region',
+        coordinates: { latitude: 19.8, longitude: 85.8 },
+        priority: 'high',
+        riskScore: 76,
+        totalReports: 156,
+        cities: citiesData.filter(city => ['puri', 'paradip', 'gopalpur'].includes(city.id)),
+        averageConditions: {
+          temperature: 27.6,
+          waveHeight: 1.7,
+          windSpeed: 14.5,
+          airQuality: 102
+        }
+      },
+      {
+        id: 'west-bengal-coast',
+        name: 'West Bengal Coastal Region',
+        coordinates: { latitude: 22.0, longitude: 88.0 },
+        priority: 'critical',
+        riskScore: 92,
+        totalReports: 267,
+        cities: citiesData.filter(city => ['kolkata', 'digha', 'haldia'].includes(city.id)),
+        averageConditions: {
+          temperature: 26.9,
+          waveHeight: 1.4,
+          windSpeed: 11.6,
+          airQuality: 163
+        }
+      }
+    ]
+  },
+  {
+    id: 'indian-ocean',
+    name: 'Indian Ocean Islands',
+    description: 'Andaman & Nicobar and Lakshadweep Islands',
+    color: '#F59E0B',
+    hotspots: [
+      {
+        id: 'andaman-nicobar',
+        name: 'Andaman & Nicobar Islands',
+        coordinates: { latitude: 11.6, longitude: 92.7 },
+        priority: 'medium',
+        riskScore: 58,
+        totalReports: 42,
+        cities: citiesData.filter(city => city.id === 'portblair'),
+        averageConditions: {
+          temperature: 29.7,
+          waveHeight: 1.1,
+          windSpeed: 8.4,
+          airQuality: 48
+        }
+      },
+      {
+        id: 'lakshadweep',
+        name: 'Lakshadweep Islands',
+        coordinates: { latitude: 10.6, longitude: 72.6 },
+        priority: 'low',
+        riskScore: 35,
+        totalReports: 18,
+        cities: citiesData.filter(city => city.id === 'kavaratti'),
+        averageConditions: {
+          temperature: 28.6,
+          waveHeight: 1.0,
+          windSpeed: 9.8,
+          airQuality: 42
+        }
+      }
+    ]
+  }
+];
 
-  // Simulate small variations in real-time data
-  const variation = () => (Math.random() - 0.5) * 0.2;
+// Legacy export for backward compatibility
+export const indianCoastalCities = citiesData;
+
+// Helper functions
+export const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case 'critical': return '#EF4444';
+    case 'high': return '#F59E0B';
+    case 'medium': return '#3B82F6';
+    case 'low': return '#10B981';
+    default: return '#6B7280';
+  }
+};
+
+export const getPrioritySize = (priority: string) => {
+  switch (priority) {
+    case 'critical': return 25;
+    case 'high': return 20;
+    case 'medium': return 15;
+    case 'low': return 12;
+    default: return 10;
+  }
+};
+// Simulate real-time updates for hotspots
+export const updateHotspotData = (hotspotId: string, seaId: string) => {
+  const seaRegion = seaRegions.find(s => s.id === seaId);
+  if (!seaRegion) return null;
+  
+  const hotspot = seaRegion.hotspots.find(h => h.id === hotspotId);
+  if (!hotspot) return null;
+
+  // Simulate priority changes based on conditions
+  const variation = () => (Math.random() - 0.5) * 5;
   
   return {
-    ...city,
-    oceanicClimate: {
-      ...city.oceanicClimate,
-      seaSurfaceTemp: {
-        ...city.oceanicClimate.seaSurfaceTemp,
-        current: parseFloat((city.oceanicClimate.seaSurfaceTemp.current + variation()).toFixed(1))
-      },
-      humidity: {
-        ...city.oceanicClimate.humidity,
-        current: Math.max(0, Math.min(100, Math.round(city.oceanicClimate.humidity.current + variation() * 5)))
-      },
-      windSpeed: {
-        ...city.oceanicClimate.windSpeed,
-        current: parseFloat((Math.max(0, city.oceanicClimate.windSpeed.current + variation() * 3)).toFixed(1))
-      },
-      waveHeight: {
-        ...city.oceanicClimate.waveHeight,
-        current: parseFloat((Math.max(0, city.oceanicClimate.waveHeight.current + variation())).toFixed(1))
-      }
-    },
-    lastUpdated: new Date()
+    ...hotspot,
+    riskScore: Math.max(0, Math.min(100, hotspot.riskScore + variation())),
+    totalReports: hotspot.totalReports + Math.floor(Math.random() * 3),
+    averageConditions: {
+      ...hotspot.averageConditions,
+      temperature: parseFloat((hotspot.averageConditions.temperature + (Math.random() - 0.5) * 0.5).toFixed(1)),
+      waveHeight: parseFloat((Math.max(0, hotspot.averageConditions.waveHeight + (Math.random() - 0.5) * 0.3)).toFixed(1))
+    }
   };
 };
