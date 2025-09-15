@@ -77,15 +77,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ reports }) => {
   }, [reports]);
 
   return (
-    <div className="w-full h-full min-h-[400px] lg:min-h-[600px]">
-      <div ref={mapRef} className="w-full h-full rounded-xl shadow-card" />
+    <div className="relative w-full h-full min-h-[400px] lg:min-h-[600px]">
+      <div ref={mapRef} className="w-full h-full rounded-xl shadow-card z-10" />
       {reports.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/50 rounded-xl">
-          <p className="text-muted-foreground text-center px-4">
-            {t('demoMode')}
+        <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm border rounded-lg px-3 py-2 z-20">
+          <p className="text-sm text-muted-foreground">
+            Demo Mode: Showing sample hazard data
           </p>
         </div>
       )}
+      <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm border rounded-lg px-3 py-2 z-20">
+        <p className="text-xs text-muted-foreground">
+          {reports.length} hazard reports displayed
+        </p>
+      </div>
     </div>
   );
 };

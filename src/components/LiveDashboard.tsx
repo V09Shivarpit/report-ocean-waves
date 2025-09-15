@@ -148,32 +148,34 @@ const LiveDashboard: React.FC<LiveDashboardProps> = ({ reports }) => {
           <div className="lg:col-span-3">
             <Card className="p-6 card-shadow">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Live Ocean Hazard Map</h3>
+                <h3 className="font-semibold">🗺️ Live Ocean Hazard Map</h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   Last updated: {new Date().toLocaleTimeString()}
                 </div>
               </div>
               
-              <MapComponent reports={reports} />
+              <div className="w-full h-[500px] lg:h-[600px]">
+                <MapComponent reports={reports} />
+              </div>
               
               {/* Map Legend */}
               <div className="mt-4 flex flex-wrap gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span>High Risk</span>
+                  <span>Tsunami Alert</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                  <span>High Waves</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <span>Medium Risk</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span>Low Risk</span>
+                  <span>Algae Bloom</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span>Citizen Report</span>
+                  <span>Marine Debris</span>
                 </div>
               </div>
             </Card>
