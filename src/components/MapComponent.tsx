@@ -5,6 +5,8 @@ import { seaRegions, SeaRegionHotspot, getPriorityColor, getPrioritySize } from 
 import { useLanguage } from '@/hooks/useLanguage';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Cloud, CloudOff, Eye, EyeOff } from 'lucide-react';
 
 // Fix for default markers in Leaflet with Vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -31,7 +33,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ reports }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const hotspotsRef = useRef<L.Circle[]>([]);
+  const cloudLayerRef = useRef<L.TileLayer | null>(null);
   const [selectedHotspot, setSelectedHotspot] = useState<SeaRegionHotspot | null>(null);
+  const [showCloudCover, setShowCloudCover] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -48,11 +52,31 @@ const MapComponent: React.FC<MapComponentProps> = ({ reports }) => {
 
     mapInstanceRef.current = map;
 
+    // Add cloud cover layer (initially hidden)
+    const cloudLayer = L.tileLayer('https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=demo', {
+      attribution: 'Cloud data © OpenWeatherMap',
+      opacity: 0.6,
+    });
+    
+    cloudLayerRef.current = cloudLayer;
+
     // Cleanup function
     return () => {
       map.remove();
     };
   }, []);
+
+  // Toggle cloud cover
+  const toggleCloudCover = () => {
+    if (!mapInstanceRef.current || !cloudLayerRef.current) return;
+    
+    if (showCloudCover) {
+      mapInstanceRef.current.removeLayer(cloudLayerRef.current);
+    } else {
+      cloudLayerRef.current.addTo(mapInstanceRef.current);
+    }
+    setShowCloudCover(!showCloudCover);
+  };
 
   // Update hotspots when sea regions change
   useEffect(() => {
@@ -137,24 +161,55 @@ const MapComponent: React.FC<MapComponentProps> = ({ reports }) => {
     <div className="relative w-full h-full min-h-[400px] lg:min-h-[600px]">
       <div ref={mapRef} className="w-full h-full rounded-xl shadow-card z-10" />
       
-      {/* Legend */}
-      <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm border rounded-lg p-3 z-20 max-w-xs">
-        <h4 className="text-sm font-semibold mb-2">Priority Hotspots</h4>
-        <div className="space-y-1 text-xs">
-          {['critical', 'high', 'medium', 'low'].map(priority => (
-            <div key={priority} className="flex items-center gap-2">
-              <div 
-                className="w-3 h-3 rounded-full border-2 border-white"
-                style={{ backgroundColor: getPriorityColor(priority) }}
-              />
-              <span className="capitalize">{priority}</span>
-            </div>
-          ))}
+      {/* Map Controls */}
+      <div className="absolute top-4 right-4 z-20 space-y-2">
+        {/* Cloud Cover Toggle */}
+        <div className="bg-card/90 backdrop-blur-sm border rounded-lg p-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleCloudCover}
+            className={`transition-all duration-300 ${showCloudCover ? 'bg-primary/20 text-primary' : ''}`}
+          >
+            {showCloudCover ? (
+              <>
+                <EyeOff className="h-4 w-4 mr-2" />
+                Hide Clouds
+              </>
+            ) : (
+              <>
+                <Eye className="h-4 w-4 mr-2" />
+                Show Clouds
+              </>
+            )}
+          </Button>
         </div>
-        <div className="mt-2 pt-2 border-t">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-red-500 rounded-full border border-white" />
-            <span>Individual Reports</span>
+
+        {/* Legend */}
+        <div className="bg-card/90 backdrop-blur-sm border rounded-lg p-3 max-w-xs">
+          <h4 className="text-sm font-semibold mb-2">Priority Hotspots</h4>
+          <div className="space-y-1 text-xs">
+            {['critical', 'high', 'medium', 'low'].map(priority => (
+              <div key={priority} className="flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full border-2 border-white"
+                  style={{ backgroundColor: getPriorityColor(priority) }}
+                />
+                <span className="capitalize">{priority}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 pt-2 border-t">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full border border-white" />
+              <span>Individual Reports</span>
+            </div>
+            {showCloudCover && (
+              <div className="flex items-center gap-2 mt-1">
+                <Cloud className="w-3 h-3 text-blue-400" />
+                <span>Cloud Cover</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

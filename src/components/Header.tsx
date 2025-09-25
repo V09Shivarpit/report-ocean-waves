@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Menu, X, ChevronDown, Waves } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { languages, Language } from '@/lib/translations';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +51,9 @@ const Header: React.FC = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            
             {/* Language Switcher */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -58,12 +62,12 @@ const Header: React.FC = () => {
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-card border border-border">
+              <DropdownMenuContent align="end" className="glass-strong">
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
                     onClick={() => setLanguage(lang.code)}
-                    className={`cursor-pointer ${language === lang.code ? 'bg-accent' : ''}`}
+                    className={`cursor-pointer transition-colors hover:bg-accent/50 ${language === lang.code ? 'bg-accent' : ''}`}
                   >
                     {lang.nativeName} ({lang.name})
                   </DropdownMenuItem>
@@ -71,7 +75,7 @@ const Header: React.FC = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="theme-transition hover:bg-accent/50">
               {t('login')}
             </Button>
           </div>
@@ -90,7 +94,7 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-4 border-t border-border/50">
+          <div className="md:hidden py-4 space-y-4 border-t border-border/50 glass-effect">
             {navigationItems.map((item) => (
               <a
                 key={item.key}
@@ -102,28 +106,35 @@ const Header: React.FC = () => {
               </a>
             ))}
             
-            {/* Mobile Language Switcher */}
-            <div className="pt-4 border-t border-border/50">
-              <p className="text-xs text-muted-foreground mb-2">Language / भाषा</p>
-              <div className="grid grid-cols-2 gap-2">
-                {languages.map((lang) => (
-                  <Button
-                    key={lang.code}
-                    variant={language === lang.code ? "secondary" : "ghost"}
-                    size="sm"
-                    onClick={() => {
-                      setLanguage(lang.code);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="justify-start text-xs"
-                  >
-                    {lang.nativeName}
-                  </Button>
-                ))}
+            {/* Mobile Theme & Language Switcher */}
+            <div className="pt-4 border-t border-border/50 space-y-3">
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Theme</p>
+                <ThemeToggle />
+              </div>
+              
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Language / भाषा</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {languages.map((lang) => (
+                    <Button
+                      key={lang.code}
+                      variant={language === lang.code ? "secondary" : "ghost"}
+                      size="sm"
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="justify-start text-xs theme-transition"
+                    >
+                      {lang.nativeName}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
             
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full theme-transition">
               {t('login')}
             </Button>
           </div>
